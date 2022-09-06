@@ -1,7 +1,38 @@
 [
   {
-    "name": "Animation",
-    "image": "none",
-    "movies or series": ["Mickey's House of Villains"]
+    "name": "Action",
+    "image": "none"
+  },
+  {
+    "name": "Comedy",
+    "image": "none"
+  },
+  {
+    "name": "Drama",
+    "image": "none"
+  },
+  {
+    "name": "Fantasy",
+    "image": "none"
+  },
+  {
+    "name": "Horror",
+    "image": "none"
+  },
+  {
+    "name": "Mystery",
+    "image": "none"
+  },
+  {
+    "name": "Romance",
+    "image": "none"
+  },
+  {
+    "name": "Thriller",
+    "image": "none"
+  },
+  {
+    "name": "Thriller",
+    "image": "none"
   }
 ]

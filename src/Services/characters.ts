@@ -1,12 +1,14 @@
 import express, { Response, Request } from "express";
 const { Character, Movie } = require("../db");
+require("dotenv").config();
 import jwt from "jsonwebtoken";
 import characters from "../../data/Characters.json";
-import movies from "../../data/Movies.json";
+
+const { CLAVE_TOKEN } = process.env;
 
 const getPersonajes = async (req: any, res: Response) => {
   try {
-    jwt.verify(req.token, "secretkey");
+    jwt.verify(req.token, CLAVE_TOKEN || "tokenTest");
 
     characters.forEach(async (element) => {
       await Character.findOrCreate({
@@ -24,7 +26,7 @@ const getPersonajes = async (req: any, res: Response) => {
     return res.status(200).json(allCharacters);
   } catch (error) {
     console.log(error);
-    return res.status(400).json("Error to get Characters");
+    return res.status(500).json("Error to get Characters");
   }
 };
 
@@ -35,12 +37,17 @@ const createCharacter = async (req: Request, res: Response) => {
       where: {
         name: name,
       },
+      include: {
+        model: Movie,
+      },
     });
+    characterExist.add;
+
     if (characterExist) return res.status(400).json("El personaje ya existe");
     return res.status(200).json({ image, name, age, history });
   } catch (error) {
     console.log(error);
-    return res.status(400).json({ mensaje: "Error to create Character" });
+    return res.status(500).json({ mensaje: "Error to create Character" });
   }
 };
 

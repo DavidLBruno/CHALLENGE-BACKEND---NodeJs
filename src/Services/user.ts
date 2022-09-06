@@ -1,6 +1,9 @@
 import express, { Response, Request } from "express";
 import jwt from "jsonwebtoken";
 const { User } = require("../db");
+require("dotenv").config();
+
+const { CLAVE_TOKEN } = process.env;
 
 const registerUser = async (req: Request, res: Response) => {
   try {
@@ -44,23 +47,28 @@ const loginUser = async (req: Request, res: Response) => {
         .status(400)
         .json({ mensaje: "Debe colocar una contraseña o un mail valido" });
     }
+
     const user = await User.findOne({
       where: {
         mail: mail,
       },
     });
     if (!user || user.password !== password) {
-      return res.status(400).json({ mensaje: "Mail o contraseña incorrecto" });
+      return res.status(500).json({ mensaje: "Mail o contraseña incorrecto" });
     }
 
-    jwt.sign({ user: user }, "secretkey", (error: any, token: any) => {
-      res.json({
-        token,
-      });
-    });
+    jwt.sign(
+      { user: user },
+      CLAVE_TOKEN || "tokenTest",
+      (error: any, token: any) => {
+        res.json({
+          token,
+        });
+      }
+    );
   } catch (error) {
     console.log(error);
-    return res.status(400).json({
+    return res.status(500).json({
       mensaje: "Ha ocurrido un error",
     });
   }
