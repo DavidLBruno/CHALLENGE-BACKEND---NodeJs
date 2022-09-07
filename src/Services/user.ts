@@ -33,9 +33,7 @@ const registerUser = async (req: Request, res: Response) => {
     return res.status(200).json("User registed!");
   } catch (error) {
     console.log(error);
-    return res.status(400).json({
-      mensaje: "Error al registrar el usuario",
-    });
+    return res.status(500).json({ mensaje: "Error to register User" });
   }
 };
 
@@ -68,10 +66,24 @@ const loginUser = async (req: Request, res: Response) => {
     );
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      mensaje: "Ha ocurrido un error",
-    });
+    return res.status(500).json({ mensaje: "Error to login User" });
   }
 };
 
-export { registerUser, loginUser };
+const editUser = async (req: any, res: Response) => {
+  try {
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ mensaje: "Error to edit User" });
+  }
+};
+
+const deleteUser = async (req: any, res: Response) => {
+  try {
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ mensaje: "Error to delete User" });
+  }
+};
+
+export { registerUser, loginUser, editUser, deleteUser };
