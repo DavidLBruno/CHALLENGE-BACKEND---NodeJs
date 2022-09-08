@@ -1,11 +1,30 @@
 import express, { Response, Request } from "express";
-const { Character, Movie } = require("../db");
+const { Character, Movie, Genre } = require("../db");
 require("dotenv").config();
 const { CLAVE_TOKEN } = process.env;
-import movies from "../../data/Movies.json";
+import genres from "../../data/Genre.json";
 
 const getGenres = async (req: any, res: Response) => {
   try {
+    (() => {
+      genres.forEach(async (element) => {
+        await Genre.findOrCreate({
+          where: {
+            name: element.name,
+            image: element.image,
+          },
+        });
+      });
+    })();
+
+    const allGenres = await Genre.findAll({
+      attributes: ["id", "name", "image"],
+    });
+
+    res.status(200).json({
+      mensaje: "Todos los generos!",
+      Generos: allGenres,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ mensaje: "Error to get Genres" });

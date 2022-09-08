@@ -61,8 +61,8 @@ const { Character, Movie, Genre, User } = sequelize.models;
 Character.belongsToMany(Movie, { through: "Character_Movie" });
 Movie.belongsToMany(Character, { through: "Character_Movie" });
 
-Movie.belongsToMany(Genre, { through: "Movie_Genre" });
-Genre.belongsToMany(Movie, { through: "Movie_Genre" });
+Genre.belongsToMany(Movie, { through: "Genre_Movie" });
+Movie.belongsToMany(Genre, { through: "Genre_Movie" });
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

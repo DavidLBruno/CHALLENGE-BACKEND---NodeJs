@@ -30,7 +30,7 @@ import { verifyToken } from "../Services/verifyToken";
 const router = Router();
 
 /* User */
-router.get("/login", loginUser);
+router.post("/login", loginUser);
 router.post("/register", registerUser);
 router.put("/login", verifyToken, editUser);
 router.delete("/login", verifyToken, deleteUser);

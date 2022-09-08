@@ -1,9 +1,10 @@
 import express, { Response, Request } from "express";
 import jwt from "jsonwebtoken";
+import bcryptjs from "bcryptjs";
 const { User } = require("../db");
 require("dotenv").config();
 
-const { CLAVE_TOKEN } = process.env;
+const { CLAVE_TOKEN, CLAVE_HASH } = process.env;
 
 const registerUser = async (req: Request, res: Response) => {
   try {
@@ -11,29 +12,36 @@ const registerUser = async (req: Request, res: Response) => {
     if (!name || !mail || !password) {
       return res
         .status(400)
-        .json({ mensaje: "Nombre, mail o contraseña invalidos" });
+        .json({ mensaje: "Debe colocar Name, Mail y una Password" });
     }
-    let userExitent = await User.findOne({
+    const passwordHash = await bcryptjs.hash(password, 5);
+    let userExistent = await User.findOne({
       where: {
         mail: mail,
       },
     });
 
-    if (userExitent) {
-      return res.status(400).json("Mail already use");
+    if (userExistent) {
+      return res.status(400).json({
+        mensaje: "Mail already use",
+      });
     }
 
     await User.findOrCreate({
       where: {
         name: name,
         mail: mail,
-        password: password,
+        password: passwordHash,
       },
     });
-    return res.status(200).json("User registed!");
+    return res.status(200).json({
+      mensaje: "User registed!",
+    });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ mensaje: "Error to register User" });
+    return res.status(500).json({
+      mensaje: "Error to register User",
+    });
   }
 };
 
@@ -51,15 +59,19 @@ const loginUser = async (req: Request, res: Response) => {
         mail: mail,
       },
     });
-    if (!user || user.password !== password) {
-      return res.status(500).json({ mensaje: "Mail o contraseña incorrecto" });
+
+    const passwordCorrect = await bcryptjs.compare(password, user.password);
+
+    if (!user || !passwordCorrect) {
+      return res.status(400).json({ mensaje: "Mail o contraseña incorrecto" });
     }
 
     jwt.sign(
       { user: user },
       CLAVE_TOKEN || "tokenTest",
       (error: any, token: any) => {
-        res.json({
+        res.status(200).json({
+          mensaje: "Logeado correctamente!",
           token,
         });
       }
