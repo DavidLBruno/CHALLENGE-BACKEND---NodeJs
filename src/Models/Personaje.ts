@@ -14,6 +14,10 @@ module.exports = (sequelize: any) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    weight: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     history: {
       type: DataTypes.TEXT,
       allowNull: false,
