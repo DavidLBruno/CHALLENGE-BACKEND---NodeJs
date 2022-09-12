@@ -1,10 +1,13 @@
 import express, { Response, Request } from "express";
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
-const { User } = require("../db");
 require("dotenv").config();
+const sgMail = require("@sendgrid/mail");
+const { User } = require("../db");
 
-const { CLAVE_TOKEN, CLAVE_HASH } = process.env;
+const { CLAVE_TOKEN, CLAVE_HASH, SENDGRID_API_KEY, MAIL } = process.env;
+
+sgMail.setApiKey(SENDGRID_API_KEY);
 
 const registerUser = async (req: Request, res: Response) => {
   try {
@@ -34,6 +37,17 @@ const registerUser = async (req: Request, res: Response) => {
         password: passwordHash,
       },
     });
+
+    await sgMail.send({
+      to: mail,
+      from: MAIL,
+      subject:
+        "Usuario registrado correctamente para la API REST de la prueba de Alkemy!",
+      text: "Mail registrado con exito! Puede usar la api sin problemas!",
+    });
+
+    console.log("El mail se envio");
+
     return res.status(200).json({
       mensaje: "User registed!",
     });
