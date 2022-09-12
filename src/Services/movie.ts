@@ -43,23 +43,31 @@ const getMovies = async (req: any, res: Response) => {
       ];
       parameters.where.title = title;
     } else if (genre) {
-      parameters.include = [
-        {
-          model: Character,
-          attributes: ["name"],
+      let findGenre = await Genre.findAll({
+        where: { name: genre },
+        attributes: [],
+        through: {
+          attributes: [],
+        },
+        include: {
+          model: Movie,
+          attributes: ["id", "title", "date", "image"],
           through: {
             attributes: [],
           },
-        },
-        {
-          model: Genre,
-          attributes: ["name"],
-          through: {
-            attributes: [],
+          include: {
+            model: Character,
+            attributes: ["name"],
+            through: {
+              attributes: [],
+            },
           },
         },
-      ];
-      parameters.where.genre = genre;
+      });
+      return res.status(200).json({
+        mensaje: "Peliculas encontradas",
+        movies: findGenre[0].movies,
+      });
     } else if (order) {
       parameters.order = [["title", order]];
     }
@@ -79,6 +87,12 @@ const getMovies = async (req: any, res: Response) => {
 const createMovie = async (req: any, res: Response) => {
   try {
     const { image, title, date, Characters, Genres } = req.body;
+
+    if (!title || !date || !image) {
+      return res.status(400).json({
+        mensaje: "Debe colocar title, date e image",
+      });
+    }
 
     const movieExist = await Movie.findOne({
       where: {
@@ -128,6 +142,39 @@ const createMovie = async (req: any, res: Response) => {
 
 const editMovie = async (req: any, res: Response) => {
   try {
+    const { id } = req.params;
+    const { title, date, image } = req.body;
+
+    if (isNaN(id)) {
+      return res.status(400).json({
+        mensaje: "El di tiene que ser un numero",
+      });
+    } else if (!title || !date || !image) {
+      return res.status(400).json({
+        mensaje: "Debe colocar title, date e image",
+      });
+    }
+
+    let editMovie = await Movie.update(
+      {
+        title,
+        date,
+        image,
+      },
+      {
+        where: { id },
+      }
+    );
+
+    if (!editMovie[0]) {
+      return res.status(400).json({
+        mensaje: "No se encontro la pelicula",
+      });
+    }
+
+    res.status(200).json({
+      mensaje: "Pelicula editada correctamente",
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ mensaje: "Error to edit Movie" });
@@ -136,6 +183,27 @@ const editMovie = async (req: any, res: Response) => {
 
 const deleteMovie = async (req: any, res: Response) => {
   try {
+    const { id } = req.params;
+
+    if (isNaN(id)) {
+      return res.status(400).json({
+        mensaje: "El di tiene que ser un numero",
+      });
+    }
+
+    const movieDeleted = await Movie.destroy({
+      where: { id },
+    });
+
+    if (!movieDeleted) {
+      return res.status(400).json({
+        mensaje: "La pelicula no se encuentra",
+      });
+    }
+
+    res.status(200).json({
+      mensaje: "Pelicula eliminada correctamente",
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ mensaje: "Error to delete Movie" });

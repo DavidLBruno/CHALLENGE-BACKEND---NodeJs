@@ -56,7 +56,6 @@ sequelize.models = Object.fromEntries(capsEntries);
 const { Character, Movie, Genre, User } = sequelize.models;
 
 // Aca vendrian las relaciones
-// Product.hasMany(Reviews);
 
 Character.belongsToMany(Movie, { through: "Character_Movie" });
 Movie.belongsToMany(Character, { through: "Character_Movie" });

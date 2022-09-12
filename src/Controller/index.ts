@@ -36,14 +36,14 @@ router.delete("/login", verifyToken, deleteUser);
 /* Characters */
 router.get("/characters", verifyToken, getCharacters);
 router.post("/character", verifyToken, createCharacter);
-router.put("/character", verifyToken, editCharacter);
-router.delete("/character", verifyToken, deleteCharacter);
+router.put("/character/:id", verifyToken, editCharacter);
+router.delete("/character/:id", verifyToken, deleteCharacter);
 
 /* Movie */
 router.get("/movies", verifyToken, getMovies);
 router.post("/movie", verifyToken, createMovie);
-router.put("/movie", verifyToken, editMovie);
-router.delete("/movie", verifyToken, deleteMovie);
+router.put("/movie/:id", verifyToken, editMovie);
+router.delete("/movie/:id", verifyToken, deleteMovie);
 
 /* Genre */
 router.get("/genres", verifyToken, getGenres);
